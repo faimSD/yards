@@ -1,0 +1,3 @@
+[console_scripts]
+yards = yards._cli:main
+
