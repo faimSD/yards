@@ -41,28 +41,25 @@ def validate_parameters(parameters):
 
     if diff(good_params, list(parameters.keys())) != set():
         is_valid = False
-    if !isinstance(parameters['game_title'], basestring):
+    if not isinstance(parameters['game_title'], basestring):
         is_valid = False
-    if !isinstance(parameters['num_images'], int) or parameters['num_images'] < 0:
+    if not isinstance(parameters['num_images'], int) or parameters['num_images'] < 0:
         is_valid = False
-    if !isinstance(parameters['train_size'], float) or parameters['train_size'] < 0.0
-    or parameters['train_size'] > 1.0:
+    if not isinstance(parameters['train_size'], float) or parameters['train_size'] < 0.0 or parameters['train_size'] > 1.0:
         is_valid = False
-    if !isinstance(parameters['real_size'], float) or parameters['real_size'] < 0.0
-    or parameters['real_size'] > 1.0:
+    if not isinstance(parameters['real_size'], float) or parameters['real_size'] < 0.0 or parameters['real_size'] > 1.0:
         is_valid = False
-    if !isinstance(parameters['label_all_classes'], bool):
+    if not isinstance(parameters['label_all_classes'], bool):
         is_valid = False
-    if !checklist(parameters[labeled_classes]):
+    if not checklist(parameters[labeled_classes]):
         is_valid = False
-    if !isinstance(parameters['max_sprites_per_class'], int) or parameters['label_all_classes'] < -1:
+    if not isinstance(parameters['max_sprites_per_class'], int) or parameters['label_all_classes'] < -1:
         is_valid = False
-    if !isinstance(parameters['transform_sprites'], bool):
+    if not isinstance(parameters['transform_sprites'], bool):
         is_valid = False
-    if !isinstance(parameters['clip_sprites'], bool):
+    if not isinstance(parameters['clip_sprites'], bool):
         is_valid = False
-    if parameters['classification_scheme'] != 'distribution' or parameters['classification_scheme'] != 'discrete'
-    or parameters['classification_scheme'] != 'random':
+    if parameters['classification_scheme'] != 'distribution' or parameters['classification_scheme'] != 'discrete' or parameters['classification_scheme'] != 'random':
         is_valid = False
 
     return is_valid
