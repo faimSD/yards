@@ -14,11 +14,9 @@ import glob
 import shutil
 import yaml
 import tqdm
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import ProcessPoolExecutor
-import multiprocessing as mp
 from PIL import Image, ImageDraw
 from numpy.random import choice
+from numpy import unique
 from .tools import _helper # import the helper module correctly
 from .tools import _validator
 
@@ -117,8 +115,11 @@ class yards():
 
     def set_classes(self, classes):
         '''Sets the classes'''
-        if _validator.validate_classes(classes):
-            self._classes = classes
+        if _validator.validate_classes(classes, self._params['classification_scheme']):
+            if self._params['classification_scheme'] == 'mimic-real':
+                self.approximate_frequency_spaces_from_real_data(classes)
+            else:
+                self._classes = classes
             if self._params != None:
                 if self._params['label_all_classes']:
                     self._class_numbers = {c: n for (c, n) in list(zip(self._classes, [i for i in range(len(self._classes))]))}
@@ -140,6 +141,38 @@ class yards():
     def get_classes(self):
         '''Returns the classes'''
         return self._classes
+
+    def approximate_frequency_spaces_from_real_data(self, class_ids):
+        """Approximates frequency spaces by analyzing real samples."""
+        # set up some local variables
+        real_samples_labels_dir = self._dirs['real_samples'] + "labels/"
+        real_samples_labels_paths = glob.glob(real_samples_labels_dir + "*.txt")
+        num_samples = len(real_samples_labels_paths)
+        classes = {num: [] for num in class_ids.values()}
+        print("Approximating frequency spaces from {num} samples...".format(num = num_samples))
+        # read in class info
+        for path in tqdm.tqdm(real_samples_labels_paths):
+            for c in classes: classes[c].append(0)
+            with open(path, "r") as file:
+                for line in file:
+                    class_id = int([float(i) for i in line.split()][0])
+                    if class_id in classes:
+                        classes[class_id][-1] += 1
+
+        # analyze frequencies
+        for c in class_ids:
+            class_id = class_ids[c]
+            classes[class_id] = list(unique(classes[class_id], return_counts = True))
+            total = sum(classes[class_id][1])
+            classes[class_id][1] = [num / total for num in classes[class_id][1]]
+            classes[class_id][0] = list(classes[class_id][0])
+            classes[c] = classes[class_id]
+            del classes[class_id]
+            print(c + ":\t\t", classes[c])
+
+        print("Finished approximating frequency spaces.")
+
+        self._classes = classes
 
     def _create_image(self, count, output_dir):
         '''Creates an image'''
@@ -189,26 +222,11 @@ class yards():
 
     def loop(self):
         """Creates the images."""
-        print('Writing {} images.'.format(self._params['num_images']))
+        print('Writing {} images...'.format(self._params['num_images']))
         for count in tqdm.tqdm(range(1, 1+self._params['num_images'])):
             bbox_cache = self._create_image(count, self._output_dirs['images_train'] if count <= self._params['num_train'] else self._output_dirs['images_val'])
             self._create_annotation(bbox_cache, count, self._output_dirs['labels_train'] if count <= self._params['num_train'] else self._output_dirs['labels_val'])
         print('Finished writing {} images.'.format(self._params['num_images']))
-
-    def parallel_loop(self, num_cpus):
-        """Creates the images using parallel processing"""
-        with mp.Pool(num_cpus) as pool:
-            counts = range(1, 1+self._params['num_images'])
-            result = list(tqdm.tqdm(pool.imap(self._create_image_and_annotate, [i for i in counts]), total=len(counts)))
-            pool.close()
-            pool.join()
-        '''
-        with ProcessPoolExecutor(max_workers=num_cpus) as pool:
-            counts = range(1, 1+self._params['num_images'])
-            print('Writing {} images with {} cores'.format(self._params['num_images'], num_cpus))
-            list(tqdm.tqdm(pool.map(self._create_image_and_annotate, counts), total=len(counts)))
-            print('Finished writing {} images'.format(self._params['num_images']))
-        '''
 
     def visualize(self, directory='train', num_visualize=50):
         """Draws bounding boxes around the images."""
@@ -234,7 +252,7 @@ class yards():
 
         image_paths = glob.glob(image_dir+'*.png')[0:num_visualize]
 
-        print('Visualizing {} example images.'.format(num_visualize))
+        print('Visualizing {} example images...'.format(num_visualize))
         colors = {}
         for i in tqdm.tqdm(range(len(image_paths))):
             bboxes = []

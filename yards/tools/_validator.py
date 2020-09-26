@@ -16,9 +16,9 @@ def validate_directories(paths):
     '''Returns true if the directory paths are valid'''
     from os.path import isdir
     # ensure that the keys are correct
-    correct_keys = {'maps', 'sprites', 'real_samples', 'output'}
+    correct_keys = {'maps', 'sprites', 'output'}    # real data is optional
     dirs_keys = set(paths.keys())
-    are_keys_correct = (correct_keys - dirs_keys) == set()
+    are_keys_correct = min([key in dirs_keys for key in correct_keys])
     # ensure that the directories exist
     dirs_paths = list(paths.values())
     are_paths_correct = min([isdir(path) for path in dirs_paths])
@@ -28,41 +28,39 @@ def validate_directories(paths):
 
 def validate_parameters(parameters):
     '''Returns true if the parameters are valid'''
-    is_valid = True
-    good_params = ['game_title', 'num_images', 'train_size', 'real_size',
+    correct_keys = {'game_title', 'num_images', 'train_size', 'real_size',
                    'label_all_classes', 'labeled_classes', 'max_sprites_per_class',
-                   'transform_sprites', 'clip_sprites', 'classification_scheme']
+                   'transform_sprites', 'clip_sprites', 'classification_scheme'}
+    params_keys = set(parameters.keys())
+    are_keys_correct = (correct_keys - params_keys) == set()
 
-    def diff(first, second):
-        return set(first) - set(second)
+    def checklist(ls):
+        ret = min([isinstance(el, str) for el in ls])
+        return ret
 
-    def checklist(lst):
-        return bool(lst) and all(isinstance(i, basestring) for i in lst)
-
-    if diff(good_params, list(parameters.keys())) != set():
-        is_valid = False
-    if not isinstance(parameters['game_title'], basestring):
-        is_valid = False
+    are_values_correct = True
+    if not isinstance(parameters['game_title'], str):
+        are_values_correct = False
     if not isinstance(parameters['num_images'], int) or parameters['num_images'] < 0:
-        is_valid = False
+        are_values_correct = False
     if not isinstance(parameters['train_size'], float) or parameters['train_size'] < 0.0 or parameters['train_size'] > 1.0:
-        is_valid = False
+        are_values_correct = False
     if not isinstance(parameters['real_size'], float) or parameters['real_size'] < 0.0 or parameters['real_size'] > 1.0:
-        is_valid = False
+        are_values_correct = False
     if not isinstance(parameters['label_all_classes'], bool):
-        is_valid = False
-    if not checklist(parameters[labeled_classes]):
-        is_valid = False
-    if not isinstance(parameters['max_sprites_per_class'], int) or parameters['label_all_classes'] < -1:
-        is_valid = False
+        are_values_correct = False
+    if not checklist(parameters['labeled_classes']):
+        are_values_correct = False
+    if not isinstance(parameters['max_sprites_per_class'], int):
+        are_values_correct = False
     if not isinstance(parameters['transform_sprites'], bool):
-        is_valid = False
+        are_values_correct = False
     if not isinstance(parameters['clip_sprites'], bool):
-        is_valid = False
-    if parameters['classification_scheme'] != 'distribution' or parameters['classification_scheme'] != 'discrete' or parameters['classification_scheme'] != 'random':
-        is_valid = False
+        are_values_correct = False
+    if not (parameters['classification_scheme'] == 'distribution' or parameters['classification_scheme'] == 'discrete' or parameters['classification_scheme'] == 'random' or parameters['classification_scheme'] == 'mimic-real'):
+        are_values_correct = False
 
-    return is_valid
+    return are_keys_correct and are_values_correct
 
 
 def validate_classes(classes, classification_scheme):
@@ -76,6 +74,8 @@ def validate_classes(classes, classification_scheme):
         are_values_correct = min([type(value) == int for value in classes_values])
     elif classification_scheme == 'discrete':
         are_values_correct = (min(classes_values) == max(classes_values)) and min([type(value) == int for value in classes_values])
+    elif classification_scheme == 'mimic-real':
+        are_values_correct = min([type(value) == int for value in classes_values])
     else:
         are_values_correct = False
 

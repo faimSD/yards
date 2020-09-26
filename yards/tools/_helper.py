@@ -33,6 +33,11 @@ def _get_sprite_counts(classes, classification_scheme='distribution', sprite_cap
                 sprite_counts[c] += 1
             else:
                 sprite_counts[c] = 1
+    elif classification_scheme == 'mimic-real':
+        for c in classes:
+            sprite_counts[c] = choice(classes[c][0], p=classes[c][1])
+            if sprite_counts[c] > sprite_cap and sprite_cap != -1:
+                sprite_counts[c] = sprite_cap
     else:
         print('Invalid classification scheme.')
 
