@@ -1,0 +1,33 @@
+# directories
+directories:
+    maps: 'maps/'
+    sprites: 'sprites/'
+    output: 'output/'
+    real_samples: null 
+
+# params
+parameters:
+    game_title: 'super_mario_bros'
+    num_images: 1000
+    train_size: 1.0                                          # ratio of dataset images that should be train images
+    mix_size: 0.0                                           # ratio of train images that should be real
+    label_all_classes: true
+    labeled_classes: ['player', 'item', 'warp', 'enemy']     # used if 'label_all_classes' is set to false
+    max_sprites_per_class: -1                                # if set to -1, no cap. else, it will scale distributions
+    transform_sprites: false                                 # if set to true, will perform stretch/squishification and rotation on sprites
+    clip_sprites: false
+    classification_scheme: 'random'                      # options: discrete, random, distribution, mimic-real
+
+# probability spaces
+classes:
+    player: 2
+    enemy: 2
+    item: 2
+    helpful: 2
+    warp: 2
+
+    # player: [.01, .99]
+    # enemy: [0.2, 0.2, 0.2, 0.2, 0.2]
+    # item: [0.2, 0.2, 0.2, 0.2, 0.2]
+    # helpful: [0.4, 0.3, 0.3]
+    # warp: [0.97, 0.03]

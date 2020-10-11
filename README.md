@@ -1,4 +1,5 @@
-# yards
+# YARDS
+
 YOLO Artificial Retro-game Data Synthesizer
 
 
@@ -12,7 +13,7 @@ YARDS is a command-line interface that efficiently produces semi-realistic, retr
 - **Sprite frequency space** – the discrete probability distribution over the frequency of appearances for that class on a given game-play image.
 - **Transparency quadrant** – the quadrants describing the transparent regions of a sprite image.
 
-For a more detailed explanation of how yards is implemented, please refer to the corresponding paper: 'link/to/paper/'.
+For a more detailed explanation of how YARDS is implemented, please refer to the corresponding paper: 'link/to/paper/'.
 
 
 
@@ -38,17 +39,17 @@ pip install --user dist/yards-0.1.1.tar.gz
 yards -c config.yaml -v 100
 ```
 
-### Command-Line Parameters
+#### Command-Line Parameters
 
-- `-c` or `--config` – the path to the YAML file containing configuration parameters for yards
+- `-c` or `--config` – the path to the YAML file containing configuration parameters for YARDS
 - `-v` or `--visualize` – the number of images to visualize (i.e. draw bounding boxes around the sprites in a subset of the output images)
 
-### Configuration Parameters
+#### Configuration Parameters
 
 - `game_title` – The game's title, which is prepended to each iamge's filename to avoid naming conflicts.
 - `num_images` – The total number of images to generate.
 - `train_size` – The proportion of total images which should be included in the train set.
-- `mix_size` – The proportion of total real images which should be included in the train set.
+- `mix_size` – The proportion of total real images which should be included in the train set. (to be implemented)
 - `label_all_classes` – Determines whether all classes should be labeled or if only specific classes should be.
 - `labeled_classes` – Determines which classes to label if `label_all_classes` is false. Useful for focusing attention on a single sprite and introducing noise in the form of other sprites or random images.
 - `max_sprites_per_class` – The maximum number of sprites per class which can appear in any given image. If set to -1, no cap will be set. Provides a means for limiting noise. Useful primarily when setting `classification_scheme` to random, as it allows for more control of the distribution.
@@ -64,7 +65,7 @@ yards -c config.yaml -v 100
   - `random` – Samples each class with a uniform distribution, given the maximum number of sprites for each class.
     - Each class in `classes` when using `random` should be formatted as `class_label: max_number_of_sprites_for_class`.
 
-### Config File Format
+#### Config File Format
 
 ```yaml
 directories:
@@ -77,11 +78,11 @@ parameters:
     game_title: 'title_of_game'
     num_images: 1000
     train_size: 1.0
-    mix_size: 0.0                     
+    mix_size: 0.0
     label_all_classes: true
     labeled_classes: []
-    max_sprites_per_class: -1                        
-    transform_sprites: false                              
+    max_sprites_per_class: -1
+    transform_sprites: false
     clip_sprites: true
     classification_scheme: 'mimic-real'
 
@@ -95,7 +96,7 @@ classes:
 
 
 
-### Running the Example
+## Running the Example
 
 - to be added in like 10 minutes.
 
@@ -103,6 +104,7 @@ classes:
 
 ## TODO
 
+- [ ] Implement mixing of real and synthetic datasets with `mix_size`
 - [ ] Create ReadTheDocs documentation
 - [ ] Multiprocessing
 - [ ] Basic image rendering and filtering functions (e.g. image blurring and pixellating)

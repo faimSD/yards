@@ -28,7 +28,7 @@ def validate_directories(paths):
 
 def validate_parameters(parameters):
     '''Returns true if the parameters are valid'''
-    correct_keys = {'game_title', 'num_images', 'train_size', 'real_size',
+    correct_keys = {'game_title', 'num_images', 'train_size', 'mix_size',
                    'label_all_classes', 'labeled_classes', 'max_sprites_per_class',
                    'transform_sprites', 'clip_sprites', 'classification_scheme'}
     params_keys = set(parameters.keys())
@@ -45,7 +45,7 @@ def validate_parameters(parameters):
         are_values_correct = False
     if not isinstance(parameters['train_size'], float) or parameters['train_size'] < 0.0 or parameters['train_size'] > 1.0:
         are_values_correct = False
-    if not isinstance(parameters['real_size'], float) or parameters['real_size'] < 0.0 or parameters['real_size'] > 1.0:
+    if not isinstance(parameters['mix_size'], float) or parameters['mix_size'] < 0.0 or parameters['mix_size'] > 1.0:
         are_values_correct = False
     if not isinstance(parameters['label_all_classes'], bool):
         are_values_correct = False
