@@ -106,7 +106,7 @@ classes:
 First, install the package from the repository. Then, run the following shell commands. This will generate 50 images based on the parameters set in the example config.yaml file and visualizes all 50 of them.
 
 ```
-cd examples
+cd example
 yards -c config.yaml -v 50
 ```
 
