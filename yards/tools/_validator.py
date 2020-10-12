@@ -18,6 +18,8 @@ def validate_directories(paths):
     # ensure that the keys are correct
     correct_keys = {'maps', 'sprites', 'output'}    # real data is optional
     dirs_keys = set(paths.keys())
+    print(dirs_keys)
+    print(correct_keys)
     are_keys_correct = min([key in dirs_keys for key in correct_keys])
     # ensure that the directories exist
     dirs_paths = list(paths.values())
