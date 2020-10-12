@@ -24,6 +24,7 @@ def validate_directories(paths):
     # ensure that the directories exist
     dirs_paths = list(paths.values())
     are_paths_correct = min([isdir(path) for path in dirs_paths])
+    print(are_keys_correct, are_paths_correct)
 
     return are_keys_correct and are_paths_correct
 
