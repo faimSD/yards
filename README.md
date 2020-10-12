@@ -20,6 +20,7 @@ For a more detailed explanation of how YARDS is implemented, please refer to the
 ## Dependencies
 
 - Python 3.8.5
+- (Poetry)[https://python-poetry.org/docs/#installation]
 
 ## Installation
 
