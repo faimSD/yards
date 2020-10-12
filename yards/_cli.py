@@ -6,7 +6,7 @@ _cli.py is the command-line program for that the user can use to generate pseudo
 
 import argparse
 import os
-from multiprocessing import cpu_count
+# from multiprocessing import cpu_count
 from .yards import yards
 
 # get arguments
@@ -23,10 +23,10 @@ def _get_args():
         default=None,
         help='Whether or not to visualize the output.'
     )
-    parser.add_argument('--parallel', '-p',
-        action='store_true',
-        help='Whether or not to parallelize the processes.'
-    )
+    # parser.add_argument('--parallel', '-p',
+    #     action='store_true',
+    #     help='Whether or not to parallelize the processes.'
+    # )
     
     return parser.parse_args()
 
@@ -53,11 +53,13 @@ def main():
 
     if _valid_config(args.config):
         yd.load_config_from_file(args.config)
-        if args.parallel:
-            num_cpus = cpu_count()
-            yd.parallel_loop(num_cpus=num_cpus)
-        else:
-            yd.loop()
+        yd.loop()
+        
+        # if args.parallel:
+        #     num_cpus = cpu_count()
+        #     yd.parallel_loop(num_cpus=num_cpus)
+        # else:
+        #     yd.loop()
 
     if _valid_visualize(args.visualize):
         if len(args.visualize) == 1:

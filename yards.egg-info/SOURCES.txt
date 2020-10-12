@@ -5,7 +5,6 @@ yards/_cli.py
 yards/_gui.py
 yards/data_generator.py
 yards/yards.py
-yards/yards_prototype.py
 yards.egg-info/PKG-INFO
 yards.egg-info/SOURCES.txt
 yards.egg-info/dependency_links.txt
