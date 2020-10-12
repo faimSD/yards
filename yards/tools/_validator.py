@@ -14,17 +14,17 @@ def validate_config(config):
 
 def validate_directories(paths):
     '''Returns true if the directory paths are valid'''
-    from os.path import isdir
+    from os.path import isdir, mkdir
     # ensure that the keys are correct
     correct_keys = {'maps', 'sprites', 'output'}    # real data is optional
     dirs_keys = set(paths.keys())
-    print(dirs_keys)
-    print(correct_keys)
     are_keys_correct = min([key in dirs_keys for key in correct_keys])
     # ensure that the directories exist
     dirs_paths = list(paths.values())
+    if not isdir(paths['output']):
+        mkdir(paths['output'])
+
     are_paths_correct = min([isdir(path) for path in dirs_paths])
-    print(are_keys_correct, are_paths_correct)
 
     return are_keys_correct and are_paths_correct
 
