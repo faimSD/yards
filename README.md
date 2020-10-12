@@ -102,12 +102,18 @@ classes:
 
 ## Running the Example
 
-- to be added in like 10 minutes.
+First, install the package from the repository. Then, run the following shell commands. This will generate 50 images based on the parameters set in the example config.yaml file and visualizes all 50 of them.
+
+```
+cd examples
+yards -c config.yaml -v 50
+```
 
 
 
 ## TODO
 
+- [ ] Upload to PyPI
 - [ ] Implement mixing of real and synthetic datasets with `mix_size`
 - [ ] Create ReadTheDocs documentation
 - [ ] Multiprocessing
