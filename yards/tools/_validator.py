@@ -52,7 +52,7 @@ def validate_parameters(parameters):
         are_values_correct = False
     if not isinstance(parameters['label_all_classes'], bool):
         are_values_correct = False
-    if not checklist(parameters['labeled_classes']):
+    if not parameters['label_all_classes'] and not checklist(parameters['labeled_classes']):
         are_values_correct = False
     if not isinstance(parameters['max_sprites_per_class'], int):
         are_values_correct = False
