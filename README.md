@@ -20,7 +20,7 @@ For a more detailed explanation of how YARDS is implemented, please refer to the
 ## Dependencies
 
 - Python 3.8.5
-- (Poetry)[https://python-poetry.org/docs/#installation]
+- [Poetry](https://python-poetry.org/docs/#installation) (if building/installing from source code)
 
 ## Installation
 
@@ -33,7 +33,7 @@ OR
 ```
 git clone https://github.com/faimSD/yards.git && cd yards
 poetry install && poetry build
-pip3 install --user dist/yards-0.1.1.tar.gz
+pip3 install --user dist/yards-0.1.2.tar.gz
 ```
 
 
@@ -106,7 +106,7 @@ classes:
 First, install the package from the repository. Then, run the following shell commands. This will generate 50 images based on the parameters set in the example config.yaml file and visualizes all 50 of them.
 
 ```
-cd examples
+cd example
 yards -c config.yaml -v 50
 ```
 
