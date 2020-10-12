@@ -14,7 +14,9 @@ def validate_config(config):
 
 def validate_directories(paths):
     '''Returns true if the directory paths are valid'''
-    from os.path import isdir, mkdir
+    from os.path import isdir
+    from os import mkdir
+    
     # ensure that the keys are correct
     correct_keys = {'maps', 'sprites', 'output'}    # real data is optional
     dirs_keys = set(paths.keys())
