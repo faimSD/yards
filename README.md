@@ -17,10 +17,14 @@ For a more detailed explanation of how YARDS is implemented, please refer to the
 
 
 
+## Dependencies
+
+- Python 3.8.5
+
 ## Installation
 
 ```
-pip install yards
+pip3 install yards
 ```
 
 OR
@@ -28,7 +32,7 @@ OR
 ```
 git clone https://github.com/faimSD/yards.git && cd yards
 poetry install && poetry build
-pip install --user dist/yards-0.1.1.tar.gz
+pip3 install --user dist/yards-0.1.1.tar.gz
 ```
 
 
