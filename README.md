@@ -33,7 +33,7 @@ OR
 ```
 git clone https://github.com/faimSD/yards.git && cd yards
 poetry install && poetry build
-pip3 install --user dist/yards-0.1.1.tar.gz
+pip3 install --user dist/yards-0.1.2.tar.gz
 ```
 
 
