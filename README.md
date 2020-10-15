@@ -13,7 +13,7 @@ YARDS is a command-line interface that efficiently produces semi-realistic, retr
 - **Sprite frequency space** – the discrete probability distribution over the frequency of appearances for that class on a given game-play image.
 - **Transparency quadrant** – the quadrants describing the transparent regions of a sprite image.
 
-For a more detailed explanation of how YARDS is implemented, please refer to the corresponding paper: 'link/to/paper/'.
+For a more detailed explanation of how YARDS is implemented, please refer to the corresponding paper: 'http://www.exag.org/papers/EXAG_2020_paper_8.pdf'.
 
 
 
