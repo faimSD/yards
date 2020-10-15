@@ -2,12 +2,13 @@ directories:
     maps: './maps/'
     sprites: './sprites/'
     output: './output/'
+    real: './smb_handlabeled/'
 
 parameters:
     game_title: 'super_mario_bros'
-    num_images: 50
-    train_size: 1.0                                          # ratio of dataset images that should be train images
-    mix_size: 0.0                                           # ratio of train images that should be real
+    num_images: 100
+    train_size: 0.99                                         # ratio of dataset images that should be train images
+    mix_size: 0.5                                            # ratio of real images that should be in train
     label_all_classes: true
     labeled_classes: []     # used if 'label_all_classes' is set to false
     max_sprites_per_class: -1                                # if set to -1, no cap. else, it will scale distributions

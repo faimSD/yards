@@ -17,6 +17,7 @@ import tqdm
 from PIL import Image, ImageDraw
 from numpy.random import choice
 from numpy import unique
+from random import shuffle
 from .tools import _helper # import the helper module correctly
 from .tools import _validator
 
@@ -36,6 +37,8 @@ class yards():
             self._output_dirs = None
             self._map_path_cache = None
             self._sprite_path_cache = None
+            self._real_image_paths = None
+            self._real_label_paths = None
 
     # Setting configurations and getters/setters
 
@@ -68,6 +71,11 @@ class yards():
         self._sprite_path_cache = {}
         for c in self._classes:
             self._sprite_path_cache[c] = glob.glob(self._dirs['sprites']+'{}/*.png'.format(c))
+        
+        if 'real' in self._dirs:
+            self._real_image_paths = glob.glob(self._dirs['real']+'images/*.png')
+            self._real_label_paths = {os.path.splitext(os.path.split(filepath)[1])[0]: filepath for filepath in glob.glob(self._dirs['real']+'labels/*.txt')}
+            shuffle(self._real_image_paths)
 
     def load_config_from_file(self, config_path):
         '''Loads configuration from a file'''
@@ -105,7 +113,7 @@ class yards():
         '''Sets the parameters'''
         if _validator.validate_parameters(parameters):
             self._params = parameters
-            self._params['num_train'] = self._params['train_size'] * self._params['num_images']
+            self._params['num_train'] = int(self._params['train_size'] * self._params['num_images'])
         else:
             print('Parameters are not valid')
 
@@ -222,11 +230,62 @@ class yards():
 
     def loop(self):
         """Creates the images."""
-        print('Writing {} images...'.format(self._params['num_images']))
-        for count in tqdm.tqdm(range(1, 1+self._params['num_images'])):
-            bbox_cache = self._create_image(count, self._output_dirs['images_train'] if count <= self._params['num_train'] else self._output_dirs['images_val'])
-            self._create_annotation(bbox_cache, count, self._output_dirs['labels_train'] if count <= self._params['num_train'] else self._output_dirs['labels_val'])
-        print('Finished writing {} images.'.format(self._params['num_images']))
+        if ('real' in self._dirs):
+            # local variables
+            data_indices = [i for i in range(1, 1+self._params['num_images'])] # create indices for output images/labels
+            train_indices = data_indices[:self._params['num_train']]
+            valid_indices = data_indices[self._params['num_train']:]
+            shuffle(train_indices)
+            shuffle(valid_indices)
+
+            # get number of images for train/valid and real/synt
+            n = len(self._real_image_paths) # number of real images
+            num_train_real = int(n * self._params['mix_size'])   # get number of real images -> train set
+            num_valid_real = min(len(valid_indices), n - num_train_real)    # number of real images -> val set should be the minimum of num_valid_indices and the remaining number of real images
+            num_train_real += (n - num_train_real - num_valid_real)
+
+            # split train_indices and valid_indices
+            real_indices = train_indices[:num_train_real] + valid_indices[:num_valid_real]
+            synt_indices = train_indices[num_train_real:] + valid_indices[num_valid_real:]
+
+            # real loop
+            split_index = num_train_real # split index for real images
+            n = len(real_indices)
+            print('Splitting {} real images into output directory...'.format(n))
+            for i in tqdm.tqdm(range(0, n)):
+                src_image_path = self._real_image_paths[i]
+                key = os.path.splitext(os.path.split(src_image_path)[1])[0]
+                src_label_path = self._real_label_paths[key] # figure out corresponding label path
+                count = real_indices[i]
+                if i < split_index:
+                    # put image and corresponding label into train
+                    dst_image_path = '{}{}-{}.png'.format(self._output_dirs['images_train'], self._params['game_title'], count)
+                    dst_label_path = '{}{}-{}.txt'.format(self._output_dirs['labels_train'], self._params['game_title'], count)
+                else:
+                    # put image and corresponding label into val
+                    dst_image_path = '{}{}-{}.png'.format(self._output_dirs['images_val'], self._params['game_title'], count)
+                    dst_label_path = '{}{}-{}.txt'.format(self._output_dirs['labels_val'], self._params['game_title'], count)
+                shutil.copyfile(src_image_path, dst_image_path)
+                shutil.copyfile(src_label_path, dst_label_path)
+            print('Finished splitting {} real images into output directory.'.format(n))
+
+            # synthetic loop
+            n = len(synt_indices)
+            split_index = len(train_indices[num_train_real:])
+            print('Writing {} synthetic images...'.format(n))
+            for i in tqdm.tqdm(range(0, n)):
+                count = synt_indices[i]
+                bbox_cache = self._create_image(count, self._output_dirs['images_train'] if i < split_index else self._output_dirs['images_val'])
+                self._create_annotation(bbox_cache, count, self._output_dirs['labels_train'] if i < split_index else self._output_dirs['labels_val'])
+            print('Finished writing {} synthetic images.'.format(n))
+
+        else:
+            # If there are no real images/labels provided.
+            print('Writing {} images...'.format(self._params['num_images']))
+            for count in tqdm.tqdm(range(n+1, n+1+self._params['num_images'])):
+                bbox_cache = self._create_image(count, self._output_dirs['images_train'] if count <= self._params['num_train'] else self._output_dirs['images_val'])
+                self._create_annotation(bbox_cache, count, self._output_dirs['labels_train'] if count <= self._params['num_train'] else self._output_dirs['labels_val'])
+            print('Finished writing {} images.'.format(self._params['num_images']))
 
     def visualize(self, directory='train', num_visualize=50):
         """Draws bounding boxes around the images."""
