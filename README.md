@@ -114,8 +114,8 @@ yards -c config.yaml -v 50
 
 ## TODO
 
-- [ ] Upload to PyPI
-- [ ] Implement mixing of real and synthetic datasets with `mix_size`
+- [x] Upload to PyPI
+- [x] Implement mixing of real and synthetic datasets with `mix_size`
 - [ ] Create ReadTheDocs documentation
 - [ ] Multiprocessing
 - [ ] Basic image rendering and filtering functions (e.g. image blurring and pixellating)
