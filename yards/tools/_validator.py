@@ -31,7 +31,7 @@ def validate_directories(paths):
     return are_keys_correct and are_paths_correct
 
 
-def validate_parameters(parameters):
+def validate_parameters(parameters, real_dir_exists):
     '''Returns true if the parameters are valid'''
     correct_keys = {'game_title', 'num_images', 'train_size', 'mix_size',
                    'label_all_classes', 'labeled_classes', 'max_sprites_per_class',
@@ -50,7 +50,7 @@ def validate_parameters(parameters):
         are_values_correct = False
     if not isinstance(parameters['train_size'], float) or parameters['train_size'] < 0.0 or parameters['train_size'] > 1.0:
         are_values_correct = False
-    if not isinstance(parameters['mix_size'], float) or parameters['mix_size'] < 0.0 or parameters['mix_size'] > 1.0:
+    if (not isinstance(parameters['mix_size'], float) or parameters['mix_size'] < 0.0 or parameters['mix_size'] > 1.0) and parameters['mix_size'] != -1:
         are_values_correct = False
     if not isinstance(parameters['label_all_classes'], bool):
         are_values_correct = False
@@ -63,6 +63,8 @@ def validate_parameters(parameters):
     if not isinstance(parameters['clip_sprites'], bool):
         are_values_correct = False
     if not (parameters['classification_scheme'] == 'distribution' or parameters['classification_scheme'] == 'discrete' or parameters['classification_scheme'] == 'random' or parameters['classification_scheme'] == 'mimic-real'):
+        are_values_correct = False
+    if parameters['classification_scheme'] == 'mimic-real' and not real_dir_exists:
         are_values_correct = False
 
     return are_keys_correct and are_values_correct

@@ -77,7 +77,7 @@ directories:
     maps: '/path/to/background/images/'
     sprites: '/path/to/sprite/images/'
     output: '/path/to/output/directory/'
-    real_samples: '/path/to/handlabeled/images/' 
+    real: '/path/to/handlabeled/images/' 
 
 parameters:
     game_title: 'title_of_game'

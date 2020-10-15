@@ -111,7 +111,7 @@ class yards():
 
     def set_parameters(self, parameters):
         '''Sets the parameters'''
-        if _validator.validate_parameters(parameters):
+        if _validator.validate_parameters(parameters, 'real' in self._dirs):
             self._params = parameters
             self._params['num_train'] = int(self._params['train_size'] * self._params['num_images'])
         else:
@@ -153,7 +153,7 @@ class yards():
     def approximate_frequency_spaces_from_real_data(self, class_ids):
         """Approximates frequency spaces by analyzing real samples."""
         # set up some local variables
-        real_samples_labels_dir = self._dirs['real_samples'] + "labels/"
+        real_samples_labels_dir = self._dirs['real'] + "labels/"
         real_samples_labels_paths = glob.glob(real_samples_labels_dir + "*.txt")
         num_samples = len(real_samples_labels_paths)
         classes = {num: [] for num in class_ids.values()}
@@ -176,7 +176,6 @@ class yards():
             classes[class_id][0] = list(classes[class_id][0])
             classes[c] = classes[class_id]
             del classes[class_id]
-            print(c + ":\t\t", classes[c])
 
         print("Finished approximating frequency spaces.")
 
@@ -230,7 +229,7 @@ class yards():
 
     def loop(self):
         """Creates the images."""
-        if ('real' in self._dirs):
+        if ('real' in self._dirs) and (self._params['mix_size'] != -1):
             # local variables
             data_indices = [i for i in range(1, 1+self._params['num_images'])] # create indices for output images/labels
             train_indices = data_indices[:self._params['num_train']]
@@ -282,7 +281,7 @@ class yards():
         else:
             # If there are no real images/labels provided.
             print('Writing {} images...'.format(self._params['num_images']))
-            for count in tqdm.tqdm(range(n+1, n+1+self._params['num_images'])):
+            for count in tqdm.tqdm(range(1, 1+self._params['num_images'])):
                 bbox_cache = self._create_image(count, self._output_dirs['images_train'] if count <= self._params['num_train'] else self._output_dirs['images_val'])
                 self._create_annotation(bbox_cache, count, self._output_dirs['labels_train'] if count <= self._params['num_train'] else self._output_dirs['labels_val'])
             print('Finished writing {} images.'.format(self._params['num_images']))

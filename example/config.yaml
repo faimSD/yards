@@ -6,9 +6,9 @@ directories:
 
 parameters:
     game_title: 'super_mario_bros'
-    num_images: 100
-    train_size: 0.99                                         # ratio of dataset images that should be train images
-    mix_size: 0.5                                            # ratio of real images that should be in train
+    num_images: 1000
+    train_size: 0.80                                         # ratio of dataset images that should be train images
+    mix_size: -1                                            # ratio of real images that should be in train
     label_all_classes: true
     labeled_classes: []     # used if 'label_all_classes' is set to false
     max_sprites_per_class: -1                                # if set to -1, no cap. else, it will scale distributions
